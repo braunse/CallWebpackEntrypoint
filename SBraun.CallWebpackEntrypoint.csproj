@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageVersion>0.0.1</PackageVersion>
+    <Authors>Sebastien Braun</Authors>
+    <Description>Support for calling multiple split-bundled webpack entrypoints with hashed IDs without resorting to directory listing or file globbing tricks.</Description>
+    <Copyright>2019 (C) Sebastien Braun</Copyright>
+    <PackageLicenseExpression>MPL-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/braunse/WebpackedEntrypoints</RepositoryUrl>
+    <RootNamespace>SBraun.CallWebpackEntrypoints</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.2.0" />
+  </ItemGroup>
+
+</Project>
