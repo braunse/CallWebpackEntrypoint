@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Http.Headers;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Logging;
 using Microsoft.Net.Http.Headers;
 using SBraun.CallWebpackEntrypoint;
 
@@ -21,6 +22,7 @@ namespace SBraun.CallWebpackEntrypoints
         private readonly RequestHeaders _requestHeaders;
         private readonly HttpResponse _response;
         private readonly ResponseHeaders _responseHeaders;
+        private readonly ILogger _logger;
 
         private PreconditionState _ifMatch = PreconditionState.Unchecked;
         private PreconditionState _ifNoneMatch = PreconditionState.Unchecked;
@@ -35,7 +37,7 @@ namespace SBraun.CallWebpackEntrypoints
         private bool IsHead => HttpMethods.IsHead(_request.Method);
         private bool IsGetOrHead => IsGet || IsHead;
 
-        internal AssetResponseContext(HttpContext context, IFileProvider fileProvider, WebpackFileData fileData)
+        internal AssetResponseContext(HttpContext context, IFileProvider fileProvider, WebpackFileData fileData, ILogger logger)
         {
             Contract.Assert(context != null);
             Contract.Assert(fileProvider != null);
@@ -48,6 +50,7 @@ namespace SBraun.CallWebpackEntrypoints
             _requestHeaders = _request.GetTypedHeaders();
             _response = context.Response;
             _responseHeaders = _response.GetTypedHeaders();
+            _logger = logger;
         }
 
         public Task HandleAsync()
@@ -151,7 +154,7 @@ namespace SBraun.CallWebpackEntrypoints
                 _response.Headers["Cache-Control"] = $"public,max-age={TimeSpan.FromDays(365).TotalSeconds},immutable";
 
                 _responseHeaders.Date = DateTimeOffset.Now;
-                
+
                 _responseHeaders.ETag = _etag;
                 
                 _responseHeaders.Expires = DateTimeOffset.Now + TimeSpan.FromDays(365);
@@ -221,8 +224,12 @@ namespace SBraun.CallWebpackEntrypoints
 
         private bool ChooseVariant()
         {
+            using var logScope = _logger.LogContentNegotiationScope(_request.Path, _request.Headers[HeaderNames.AcceptEncoding]);
+
+            var acceptEncoding = _requestHeaders.AcceptEncoding;
+
             _selectedVariant = _fileData.Variants
-                .Where(kv => ContentNegotiationHelpers.IsAcceptableEncoding(_requestHeaders, kv.Key))
+                .Where(kv => ContentNegotiationHelpers.IsAcceptableEncoding(acceptEncoding, kv.Key, _logger))
                 .OrderBy(kv => kv.Value.Size)
                 .FirstOrDefault()
                 .Value;

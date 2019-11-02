@@ -59,7 +59,7 @@ namespace SBraun.CallWebpackEntrypoints
         {
             // it is now officially our responsibility to handle the request or error out.
             // since file serving is surprisingly involved, delegate the rest to the AssetResponseContext.
-            var arc = new AssetResponseContext(context, _fileProvider, fileData);
+            var arc = new AssetResponseContext(context, _fileProvider, fileData, _logger);
             return arc.HandleAsync();
         }
 
