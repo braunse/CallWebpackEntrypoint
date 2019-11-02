@@ -38,13 +38,21 @@ namespace SBraun.CallWebpackEntrypoints
         {
             var entrypointsData = await _entrypoints.GetRawData();
             
-            if (!ValidateShouldHandle(context, entrypointsData, out var subPath, out var fileData))
+            if (!ValidateShouldHandle(context, entrypointsData, out var subPath, out var notFound, out var fileData))
             {
                 await _next(context);
                 return;
             }
 
+            if (notFound)
+            {
+                context.Response.StatusCode = StatusCodes.Status404NotFound;
+                return;
+            }
+            else
+            {
             await HandleAsync(context, subPath, fileData);
+        }
         }
 
         private Task HandleAsync(HttpContext context, PathString subPath, WebpackFileData fileData)
@@ -57,8 +65,10 @@ namespace SBraun.CallWebpackEntrypoints
 
         private bool ValidateShouldHandle(HttpContext context, WebpackEntrypointsData entrypointsData,
             out PathString subPath, 
+            out bool notFound,
             [NotNullWhen(true)] out WebpackFileData? fileData)
         {
+            notFound = false;
             fileData = null;
             if (!ValidateNoEndpointAssigned(context))
             {
@@ -78,9 +88,19 @@ namespace SBraun.CallWebpackEntrypoints
                 return false;
             }
 
-            if (!_claimWholePrefix && !entrypointsData.Files!.TryGetValue(subPath, out fileData))
+            var slashless = subPath.Value.TrimStart('/');
+
+            if (!entrypointsData.Files!.TryGetValue(slashless, out fileData))
             {
-                _logger.LogSkipUnknownAsset(subPath);
+                if (_claimWholePrefix)
+                {
+                    _logger.LogNotFoundAsset(slashless);
+                    notFound = true;
+                }
+                else
+            {
+                    _logger.LogSkipUnknownAsset(slashless);
+                }
                 return false;
             }
             

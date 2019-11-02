@@ -29,6 +29,12 @@ namespace SBraun.CallWebpackEntrypoints
                 new EventId(4, "SkipBecauseUnknownAsset"),
                 "Skipping asset server because unknown asset {Name} requested and prefix not claimed completely");
 
+        private static readonly Action<ILogger, string, Exception?> _logNotFoundAsset =
+            LoggerMessage.Define<string>(
+                LogLevel.Debug,
+                new EventId(6, "NotFoundAsset"),
+                "Asset {Path} requested but not found: short-circuiting and delivering 404");
+
         public static void LogNoEndpointAssigned(this ILogger logger)
             => _logNoEndpointAssigned(logger, null);
 
@@ -40,5 +46,8 @@ namespace SBraun.CallWebpackEntrypoints
 
         public static void LogSkipUnknownAsset(this ILogger logger, string name)
             => _logSkipUnknownAsset(logger, name, null);
+
+        public static void LogNotFoundAsset(this ILogger logger, string subPath)
+            => _logNotFoundAsset(logger, subPath, null);
     }
 }
