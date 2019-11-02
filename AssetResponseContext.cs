@@ -30,6 +30,7 @@ namespace SBraun.CallWebpackEntrypoints
         private PreconditionState _ifNotModfiedSince = PreconditionState.Unchecked;
         private PreconditionState _ifRange = PreconditionState.Unchecked;
 
+        private string? _selectedEncoding;
         private WebpackVariantData? _selectedVariant = null;
         private EntityTagHeaderValue? _etag;
 
@@ -160,6 +161,11 @@ namespace SBraun.CallWebpackEntrypoints
                 _responseHeaders.Expires = DateTimeOffset.Now + TimeSpan.FromDays(365);
 
                 _response.Headers["Vary"] = "Accept-Encoding";
+
+                if("identity" != _selectedEncoding)
+                {
+                    _response.Headers[HeaderNames.ContentEncoding] = _selectedEncoding;
+                }
             }
 
             if (_response.StatusCode == 200)
@@ -228,11 +234,10 @@ namespace SBraun.CallWebpackEntrypoints
 
             var acceptEncoding = _requestHeaders.AcceptEncoding;
 
-            _selectedVariant = _fileData.Variants
+            (_selectedEncoding, _selectedVariant) = _fileData.Variants
                 .Where(kv => ContentNegotiationHelpers.IsAcceptableEncoding(acceptEncoding, kv.Key, _logger))
                 .OrderBy(kv => kv.Value.Size)
-                .FirstOrDefault()
-                .Value;
+                .FirstOrDefault();
 
             if (_selectedVariant == null) return false;
 
