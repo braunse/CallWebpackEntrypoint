@@ -96,6 +96,7 @@ namespace SBraun.CallWebpackEntrypoints
                 {
                     _logger.LogNotFoundAsset(slashless);
                     notFound = true;
+                    return true;
                 }
                 else
                 {
