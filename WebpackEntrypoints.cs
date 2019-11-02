@@ -29,13 +29,13 @@ namespace SBraun.CallWebpackEntrypoint
 
             foreach (var name in names)
             {
-                var entrypoint = entrypoints.Entrypoints[name];
+                var entrypoint = entrypoints.Entrypoints![name];
                 if (entrypoint == null)
                 {
                     throw new KeyNotFoundException($"No entrypoint available named {name}");
                 }
                 
-                foreach (var epscript in entrypoint.Scripts)
+                foreach (var epscript in entrypoint.Scripts!)
                 {
                     if (!scripts.Contains(epscript))
                     {
@@ -43,7 +43,7 @@ namespace SBraun.CallWebpackEntrypoint
                     }
                 }
 
-                foreach (var epstyle in entrypoint.Stylesheets)
+                foreach (var epstyle in entrypoint.Stylesheets!)
                 {
                     if (!styles.Contains(epstyle))
                     {
@@ -58,7 +58,7 @@ namespace SBraun.CallWebpackEntrypoint
                     .Select(elem => new WebpackElement()
                     {
                         File = elem,
-                        SriHash = entrypoints.Hashes[elem],
+                        SriHash = entrypoints.Hashes![elem],
                     })
                     .ToArray();
             }
