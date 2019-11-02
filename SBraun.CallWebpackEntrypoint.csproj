@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageVersion>0.0.1</PackageVersion>
+    <PackageVersion>0.0.3</PackageVersion>
     <Authors>Sebastien Braun</Authors>
     <Description>Support for calling multiple split-bundled webpack entrypoints with hashed IDs without resorting to directory listing or file globbing tricks.</Description>
     <Copyright>2019 (C) Sebastien Braun</Copyright>
