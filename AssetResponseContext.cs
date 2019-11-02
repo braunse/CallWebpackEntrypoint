@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,6 +37,10 @@ namespace SBraun.CallWebpackEntrypoints
 
         internal AssetResponseContext(HttpContext context, IFileProvider fileProvider, WebpackFileData fileData)
         {
+            Contract.Assert(context != null);
+            Contract.Assert(fileProvider != null);
+            Contract.Assert(fileData != null);
+
             _fileProvider = fileProvider;
             _fileData = fileData;
             _context = context;
