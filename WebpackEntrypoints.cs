@@ -70,6 +70,9 @@ namespace SBraun.CallWebpackEntrypoint
             };
         }
 
+        internal Task<WebpackEntrypointsData> GetRawData()
+            => _entrypointsDataIniter.Value;
+
         private static async Task<WebpackEntrypointsData> ReadEntrypoints(Assembly assembly, string resourceName)
         {
             await using (var stream = assembly.GetManifestResourceStream(resourceName))
