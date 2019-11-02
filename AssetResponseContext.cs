@@ -162,6 +162,8 @@ namespace SBraun.CallWebpackEntrypoints
 
                 _response.Headers["Vary"] = "Accept-Encoding";
 
+                _responseHeaders.Headers[HeaderNames.ContentType] = _fileData.ContentType;
+
                 if("identity" != _selectedEncoding)
                 {
                     _response.Headers[HeaderNames.ContentEncoding] = _selectedEncoding;
@@ -171,7 +173,6 @@ namespace SBraun.CallWebpackEntrypoints
             if (_response.StatusCode == 200)
             {
                 _responseHeaders.ContentLength = _selectedVariant!.Size;
-                _responseHeaders.Headers["Conten-Type"] = _fileData.ContentType;
                 // TODO _responseHeaders.LastModified = ...
             }
         }
