@@ -74,6 +74,9 @@ namespace SBraun.CallWebpackEntrypoint
         {
             await using (var stream = assembly.GetManifestResourceStream(resourceName))
             {
+                if (stream == null)
+                    throw new InvalidOperationException($"Manifest stream {resourceName} not found in assembly {assembly}");
+
                 var reader = new StreamReader(stream, Encoding.UTF8);
                 var contents = await reader.ReadToEndAsync();
                 return JsonConvert.DeserializeObject<WebpackEntrypointsData>(contents);
