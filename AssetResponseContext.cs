@@ -147,12 +147,11 @@ namespace SBraun.CallWebpackEntrypoints
         {
             if (_response.StatusCode < 400)
             {
-                _responseHeaders.CacheControl.Public = true;
-                _responseHeaders.CacheControl.MaxAge = TimeSpan.FromDays(365);
-                _responseHeaders.CacheControl.Extensions.Add(new NameValueHeaderValue("immutable"));
+                // this is easier than building the value through the Cache-Control typed header
+                _response.Headers["Cache-Control"] = $"public,max-age={TimeSpan.FromDays(365).TotalSeconds},immutable";
 
                 _responseHeaders.Date = DateTimeOffset.Now;
-
+                
                 _responseHeaders.ETag = _etag;
                 
                 _responseHeaders.Expires = DateTimeOffset.Now + TimeSpan.FromDays(365);
