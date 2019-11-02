@@ -230,7 +230,8 @@ namespace SBraun.CallWebpackEntrypoints
 
             if (_selectedVariant == null) return false;
 
-            _etag = new EntityTagHeaderValue(_selectedVariant.Hash);
+            // entity tags must be quoted for the constructor
+            _etag = new EntityTagHeaderValue($"\"{_selectedVariant.Hash}\"");
             return true;
         }
     }
