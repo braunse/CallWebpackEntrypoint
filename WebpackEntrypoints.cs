@@ -58,7 +58,7 @@ namespace SBraun.CallWebpackEntrypoint
                     .Select(elem => new WebpackElement()
                     {
                         File = elem,
-                        SriHash = entrypoints.Hashes![elem],
+                        SriHash = entrypoints.Files![elem].SriHash!,
                     })
                     .ToArray();
             }
