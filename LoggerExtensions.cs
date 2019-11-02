@@ -29,6 +29,12 @@ namespace SBraun.CallWebpackEntrypoints
                 new EventId(4, "SkipBecauseUnknownAsset"),
                 "Skipping asset server because unknown asset {Name} requested and prefix not claimed completely");
 
+        private static readonly Action<ILogger, string, string, Exception?> _logHandlingAsset =
+            LoggerMessage.Define<string, string>(
+                LogLevel.Debug,
+                new EventId(5, "HandlingAsset"),
+                "Handling asset in prefix {Prefix} with asset sub-path {Path}");
+
         private static readonly Action<ILogger, string, Exception?> _logNotFoundAsset =
             LoggerMessage.Define<string>(
                 LogLevel.Debug,
@@ -46,6 +52,9 @@ namespace SBraun.CallWebpackEntrypoints
 
         public static void LogSkipUnknownAsset(this ILogger logger, string name)
             => _logSkipUnknownAsset(logger, name, null);
+
+        public static void LogHandlingAsset(this ILogger logger, string prefix, string subPath)
+            => _logHandlingAsset(logger, prefix, subPath, null);
 
         public static void LogNotFoundAsset(this ILogger logger, string subPath)
             => _logNotFoundAsset(logger, subPath, null);

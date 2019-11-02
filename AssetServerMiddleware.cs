@@ -51,8 +51,8 @@ namespace SBraun.CallWebpackEntrypoints
             }
             else
             {
-            await HandleAsync(context, subPath, fileData);
-        }
+                await HandleAsync(context, subPath, fileData);
+            }
         }
 
         private Task HandleAsync(HttpContext context, PathString subPath, WebpackFileData fileData)
@@ -64,7 +64,7 @@ namespace SBraun.CallWebpackEntrypoints
         }
 
         private bool ValidateShouldHandle(HttpContext context, WebpackEntrypointsData entrypointsData,
-            out PathString subPath, 
+            out PathString subPath,
             out bool notFound,
             [NotNullWhen(true)] out WebpackFileData? fileData)
         {
@@ -98,12 +98,13 @@ namespace SBraun.CallWebpackEntrypoints
                     notFound = true;
                 }
                 else
-            {
+                {
                     _logger.LogSkipUnknownAsset(slashless);
                 }
                 return false;
             }
             
+            _logger.LogHandlingAsset(_prefix, subPath);
             return true;
         }
 
